@@ -41,3 +41,9 @@ Status representa o estado atual da oportunidade.
 Outcome representa o resultado de uma interação específica.
 
 São conceitos distintos.
+
+## Leads encerrados
+
+Leads nos estados COMPLETED ou LOST são imutáveis em relação ao fluxo comercial.
+
+Novas oportunidades da mesma pessoa devem gerar novos Leads.
