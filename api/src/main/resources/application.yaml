@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: dfisio-api
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/dfisio}
+    username: ${DB_USERNAME:dfisio}
+    password: ${DB_PASSWORD:dfisio}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true

@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: dfisio-postgres
+
+    environment:
+      POSTGRES_DB: dfisio
+      POSTGRES_USER: dfisio
+      POSTGRES_PASSWORD: dfisio
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - dfisio_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dfisio -d dfisio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  dfisio_postgres_data:
