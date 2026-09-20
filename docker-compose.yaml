@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: dfisio
 
     ports:
+      # 5432 is already used by local PostgreSQL on Windows
       - "5433:5432"
 
     volumes:
