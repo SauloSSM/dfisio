@@ -25,4 +25,29 @@ public enum LeadStatus {
     public boolean isTerminal() {
         return terminal;
     }
+
+    public boolean canTransitionTo(LeadStatus target) {
+        if (target == null) {
+            return false;
+        }
+
+        return switch (this) {
+            case NEW -> target == CONTACTED || target == SCHEDULED || target == LOST;
+            case CONTACTED -> target == WAITING_CLIENT
+                    || target == WAITING_SCHEDULE
+                    || target == SCHEDULED
+                    || target == LOST;
+            case WAITING_CLIENT -> target == CONTACTED
+                    || target == WAITING_SCHEDULE
+                    || target == SCHEDULED
+                    || target == LOST;
+            case WAITING_SCHEDULE -> target == CONTACTED
+                    || target == WAITING_CLIENT
+                    || target == SCHEDULED
+                    || target == LOST;
+            case SCHEDULED -> target == COMPLETED || target == RESCHEDULE_REQUIRED || target == LOST;
+            case RESCHEDULE_REQUIRED -> target == SCHEDULED || target == LOST;
+            case COMPLETED, LOST -> false;
+        };
+    }
 }

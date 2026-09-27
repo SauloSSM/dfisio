@@ -82,6 +82,53 @@ public class Lead {
         return value;
     }
 
+    public void updateCommercialData(
+            String name,
+            String whatsapp,
+            String serviceInterest,
+            LeadOrigin origin,
+            String responsible,
+            String observation
+    ) {
+        ensureActive();
+        String validName = requireNonBlank(name, "name");
+        String validWhatsapp = requireNonBlank(whatsapp, "whatsapp");
+        String validServiceInterest = requireNonBlank(serviceInterest, "serviceInterest");
+        LeadOrigin validOrigin = Objects.requireNonNull(origin, "origin is required");
+        String validResponsible = requireNonBlank(responsible, "responsible");
+
+        this.name = validName;
+        this.whatsapp = validWhatsapp;
+        this.serviceInterest = validServiceInterest;
+        this.origin = validOrigin;
+        this.responsible = validResponsible;
+        this.observation = observation;
+    }
+
+    public void changeStatus(LeadStatus newStatus, Instant nextActionAt) {
+        Objects.requireNonNull(newStatus, "status is required");
+        ensureActive();
+
+        if (newStatus == LeadStatus.LOST) {
+            throw new IllegalStateException("LOST requires the dedicated loss flow");
+        }
+        if (!status.canTransitionTo(newStatus)) {
+            throw new IllegalStateException("Transition from " + status + " to " + newStatus + " is not allowed");
+        }
+        if (newStatus.requiresNextAction() && nextActionAt == null) {
+            throw new IllegalStateException(newStatus + " requires nextActionAt");
+        }
+
+        this.status = newStatus;
+        this.nextActionAt = newStatus.requiresNextAction() ? nextActionAt : null;
+    }
+
+    private void ensureActive() {
+        if (isTerminal()) {
+            throw new IllegalStateException("Terminal leads cannot be changed");
+        }
+    }
+
     @PrePersist
     @PreUpdate
     void validateState() {
